@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+const int INF = INT_MAX;
+
+void imprimirCamino(int destino, const vector<int>& padre) {
+    if (padre[destino] == -1) {
+        cout << destino;
+        return;
+    }
+    imprimirCamino(padre[destino], padre);
+    cout << " -> " << destino;
+}
+
+void dijkstra(int n, int origen, vector<vector<pair<int, int>>> &grafo) {
+    vector<int> distancia(n, INF);
+    vector<bool> visitado(n, false);
+    vector<int> padre(n, -1);
+
+    distancia[origen] = 0;
+
+    for (int i = 0; i < n - 1; i++) {
+        int u = -1;
+        for (int j = 0; j < n; j++) {
+            if (!visitado[j] && (u == -1 || distancia[j] < distancia[u])) {
+                u = j;
+            }
+        }
+
+        if (u == -1) break;
+
+        visitado[u] = true;
+
+        for (auto vecino : grafo[u]) {
+            int v = vecino.first;
+            int peso = vecino.second;
+
+            if (distancia[u] + peso < distancia[v]) {
+                distancia[v] = distancia[u] + peso;
+                padre[v] = u;
+            }
+        }
+    }
+
+    cout << "Distancias y caminos desde el nodo " << origen << endl;
+    for (int i = 0; i < n; i++) {
+        if (distancia[i] == INF) {
+            cout << "Nodo " << i << ": Inalcanzable"<<endl;
+        } else {
+            cout << "Nodo " << i << ": Distancia = " << distancia[i] << ", Camino: ";
+            imprimirCamino(i, padre); cout << endl;
+        }
+    }
+}
+
+int main() {
+    int n, m;
+    cout << "Cantidad de nodos: "; cin >> n;
+    cout << "Cantidad de aristas: "; cin >> m;
+
+    vector<vector<pair<int, int>>> grafo(n);
+
+    cout << "Ingrese las aristas (formato: origen destino peso):"<<endl;
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        grafo[u].push_back({v, w});
+        grafo[v].push_back({u, w}); // Grafo no dirigido
+    }
+
+    int origen;
+    cout << "Nodo origen: "; cin >> origen;
+    dijkstra(n, origen, grafo);
+
+    return 0;
+}
