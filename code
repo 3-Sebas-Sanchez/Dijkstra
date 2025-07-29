@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <climits>
+#include <limits>
 
 using namespace std;
 
-const int INF = INT_MAX;
+const double INF = numeric_limits<double>::infinity();
 
 void imprimirCamino(int destino, const vector<int>& padre) {
     if (padre[destino] == -1) {
@@ -15,12 +15,12 @@ void imprimirCamino(int destino, const vector<int>& padre) {
     cout << " -> " << destino;
 }
 
-void dijkstra(int n, int origen, int destino, vector<vector<pair<int, int>>> &grafo) {
-    vector<int> distancia(n, INF);
+void dijkstra(int n, int origen, int destino, vector<vector<pair<int, double>>> &grafo) {
+    vector<double> distancia(n, INF);
     vector<bool> visitado(n, false);
     vector<int> padre(n, -1);
 
-    distancia[origen] = 0;
+    distancia[origen] = 0.0;
 
     for (int i = 0; i < n - 1; i++) {
         int u = -1;
@@ -36,7 +36,7 @@ void dijkstra(int n, int origen, int destino, vector<vector<pair<int, int>>> &gr
 
         for (auto vecino : grafo[u]) {
             int v = vecino.first;
-            int peso = vecino.second;
+            double peso = vecino.second;
 
             if (distancia[u] + peso < distancia[v]) {
                 distancia[v] = distancia[u] + peso;
@@ -47,43 +47,44 @@ void dijkstra(int n, int origen, int destino, vector<vector<pair<int, int>>> &gr
 
     cout << "Distancias y caminos desde el nodo " << origen <<" hasta "<< destino << endl;
     if (distancia[destino] == INF) {
-        cout << "Nodo " << destino << ": Inalcanzable"<<endl;
+        cout << "Nodo " << destino << ": Inalcanzable" << endl;
     } else {
         cout << "Nodo " << destino << ": Distancia = " << distancia[destino] << ", Camino: ";
-        imprimirCamino(destino, padre); cout << endl;
+        imprimirCamino(destino, padre);
+        cout << endl;
     }
 }
 
 int main() {
     int tipGraf, n, m, origen, destino;
 
-    cout<<"Seleccione tipo de grafo: "<<endl<<"1. No dirigido."<<endl<<"2. Dirigido."<<endl; cin>>tipGraf;
+    cout << "Seleccione tipo de grafo:\n1. No dirigido.\n2. Dirigido.\n";
+    cin >> tipGraf;
     cout << "Cantidad de nodos: "; cin >> n;
     cout << "Cantidad de aristas: "; cin >> m;
 
-    vector<vector<pair<int, int>>> grafo(n);
+    vector<vector<pair<int, double>>> grafo(n);
 
-    if(tipGraf == 1) {
-        cout << "Ingrese las aristas (formato: origen destino peso):"<<endl;
-        for (int i = 0; i < m; i++) {
-            int u, v, w;
-            cin >> u >> v >> w;
+    cout << "Ingrese las aristas (formato: origen destino peso):" << endl;
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        double w;
+        cin >> u >> v >> w;
+        if (tipGraf == 1) {
             grafo[u].push_back({v, w});
             grafo[v].push_back({u, w});
         }
-    }
-    else if(tipGraf == 2) {
-        cout << "Ingrese las aristas (formato: origen destino peso):"<<endl;
-        for (int i = 0; i < m; i++) {
-            int u, v, w;
-            cin >> u >> v >> w;
+        else if (tipGraf == 2) {
             grafo[u].push_back({v, w});
+        }
+        else {
+            cout<<"Grafo no determinado";
         }
     }
 
     cout << "Nodo origen: "; cin >> origen;
     cout << "Nodo destino: "; cin >> destino;
-    dijkstra(n, origen, destino,  grafo);
+    dijkstra(n, origen, destino, grafo);
 
     return 0;
 }
