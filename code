@@ -58,7 +58,7 @@ void dijkstra(int n, int origen, int destino, vector<vector<pair<int, double>>> 
 int main() {
     int tipGraf, n, m, origen, destino;
 
-    cout << "Seleccione tipo de grafo:\n1. No dirigido.\n2. Dirigido.\n";
+    cout << "Seleccione tipo de grafo: "<<endl<<"1. No dirigido."<<endl<<"2. Dirigido."<<endl;
     cin >> tipGraf;
     cout << "Cantidad de nodos: "; cin >> n;
     cout << "Cantidad de aristas: "; cin >> m;
