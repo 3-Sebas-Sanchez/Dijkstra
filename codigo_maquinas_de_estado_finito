@@ -229,6 +229,7 @@ class MaquinaApp:
 
     def process_input_string(self):
         input_str = self.input_string_entry.get().strip()
+        from collections import Counter
         if not input_str:
             return
 
@@ -241,6 +242,9 @@ class MaquinaApp:
         output = []
         steps = []
 
+        input_counter = Counter(input_str)
+        input_counts_str = [f"'{sym}': {count}" for sym, count in input_counter.items()]
+
         try:
             for i, sym in enumerate(input_str):
                 if sym not in self.transitions[state]:
@@ -250,6 +254,8 @@ class MaquinaApp:
                 steps.append(f"Paso {i+1}: δ({self.current_state}, {sym}) → ({state}, {out})")
                 self.current_state = state
 
+            output_counter = Counter(output)
+            output_counts_str = [f"'{sym}': {count}" for sym, count in output_counter.items()]
             result = [
                 "Resultados de Simulación",
                 f"Longitud de entrada: {len(input_str)}",
@@ -259,6 +265,8 @@ class MaquinaApp:
                 f"Salida detallada: {' - '.join(output)}",
                 f"Estado final: {state}",
                 "",
+                f"Conteo de símbolos de entrada: {', '.join(input_counts_str)}",
+                f"Conteo de símbolos de salida: {', '.join(output_counts_str)}",
                 "Detalle de transiciones:",
                 *steps
             ]
